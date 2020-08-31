@@ -37,6 +37,9 @@ class EngagementWizard extends Component {
 		super( props );
 		this.state = {
 			apiKey: '',
+			apiKeyUpdated: false,
+			apiKeyError: null,
+			apiKeySuccess: null,
 			connected: false,
 			connectURL: '',
 			wcConnected: false,
@@ -89,12 +92,41 @@ class EngagementWizard extends Component {
 	};
 
 	/**
+	 * Update Mailchimp API Key setting.
+	 */
+	updateApiKey = async () => {
+		const { wizardApiFetch } = this.props;
+		const { apiKey } = this.state;
+
+		try {
+			await wizardApiFetch( {
+				path: '/newspack/v1/wizard/newspack-engagement-wizard/api-key',
+				method: 'POST',
+				data: { apiKey },
+			} );
+			this.setState( {
+				apiKeyError: null,
+				apiKeyUpdated: false,
+				apiKeySuccess: __( 'API key updated successfully.', 'newspack' ),
+			} );
+		} catch ( e ) {
+			this.setState( {
+				apiKeyError:
+					e.message || __( 'There was an error saving settings. Please try again.', 'newspack' ),
+			} );
+		}
+	};
+
+	/**
 	 * Render
 	 */
 	render() {
 		const { pluginRequirements } = this.props;
 		const {
 			apiKey,
+			apiKeyUpdated,
+			apiKeySuccess,
+			apiKeyError,
 			connected,
 			connectURL,
 			wcConnected,
@@ -163,10 +195,22 @@ class EngagementWizard extends Component {
 									subHeaderText={ subheader }
 									tabbedNavigation={ tabbed_navigation }
 									apiKey={ apiKey }
+									apiKeyError={ apiKeyError }
+									apiKeySuccess={ apiKeySuccess }
 									connected={ connected }
 									connectURL={ connectURL }
 									wcConnected={ wcConnected }
-									onChange={ _apiKey => this.setState( { apiKey: _apiKey } ) }
+									buttonEnabled={ apiKeyUpdated }
+									onSubmit={ () => {
+										this.updateApiKey();
+									} }
+									onChange={ _apiKey =>
+										this.setState( {
+											apiKey: _apiKey,
+											apiKeyUpdated: true,
+											apiKeySuccess: null,
+										} )
+									}
 								/>
 							) }
 						/>

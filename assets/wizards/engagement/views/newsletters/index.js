@@ -13,6 +13,7 @@ import { ExternalLink } from '@wordpress/components';
  * Internal dependencies
  */
 import {
+	Button,
 	Card,
 	Notice,
 	TextControl,
@@ -34,7 +35,17 @@ class Newsletters extends Component {
 	 * Render.
 	 */
 	render() {
-		const { apiKey, connected, connectURL, wcConnected, onChange } = this.props;
+		const {
+			apiKey,
+			apiKeyError,
+			apiKeySuccess,
+			buttonEnabled,
+			connected,
+			connectURL,
+			onSubmit,
+			wcConnected,
+			onChange,
+		} = this.props;
 		const { pluginRequirementsMet } = this.state;
 		return [
 			<Card key="mailchimp-block">
@@ -63,6 +74,8 @@ class Newsletters extends Component {
 			</Card>,
 			wcConnected && pluginRequirementsMet && (
 				<Card key="wc-mailchimp-plugin">
+					{ apiKeyError && <Notice noticeText={ apiKeyError } isError /> }
+					{ apiKeySuccess && <Notice noticeText={ apiKeySuccess } isSuccess /> }
 					<p>
 						{ __(
 							'Integrate the Donation feature with Mailchimp by pasting in your API key below. To find your Mailchimp API key, log into your Mailchimp account and go to Account settings > Extras > API keys. From there, either grab an existing key or generate a new one.'
@@ -73,6 +86,11 @@ class Newsletters extends Component {
 						value={ apiKey }
 						onChange={ value => onChange( value ) }
 					/>
+					<div class="newspack-buttons-card">
+						<Button isPrimary disabled={ ! buttonEnabled } onClick={ onSubmit }>
+							{ __( 'Update', 'newspack' ) }
+						</Button>
+					</div>
 				</Card>
 			),
 			wcConnected && ! pluginRequirementsMet && (

@@ -40,6 +40,13 @@ class Engagement_Wizard extends Wizard {
 	protected $related_posts_option = 'newspack_related_posts_max_age';
 
 	/**
+	 * The name of the option for Mailchimp API key. This should match the option in the Newspack Newsletters plugin.
+	 *
+	 * @var string
+	 */
+	protected $api_key_option = 'newspack_newsletters_mailchimp_api_key';
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -98,6 +105,16 @@ class Engagement_Wizard extends Wizard {
 				'sanitize_callback'   => 'sanitize_text_field',
 			]
 		);
+		register_rest_route(
+			NEWSPACK_API_NAMESPACE,
+			'/wizard/' . $this->slug . '/api-key',
+			[
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => [ $this, 'api_update_api_key' ],
+				'permission_callback' => [ $this, 'api_permissions_check' ],
+				'sanitize_callback'   => 'sanitize_text_field',
+			]
+		);
 	}
 
 	/**
@@ -121,11 +138,17 @@ class Engagement_Wizard extends Wizard {
 		$jetpack_mailchimp_status     = $jetpack_configuration_manager->get_mailchimp_connection_status();
 		$jetpack_related_posts_status = $jetpack_configuration_manager->is_related_posts_enabled();
 		if ( ! is_wp_error( $jetpack_mailchimp_status ) ) {
+			$api_key = get_option( $this->api_key_option );
+
 			$response['connected']           = $jetpack_mailchimp_status['connected'];
 			$response['connectURL']          = $jetpack_mailchimp_status['connectURL'];
 			$response['wcConnected']         = $wc_configuration_manager->is_active();
 			$response['relatedPostsEnabled'] = $jetpack_related_posts_status;
 			$response['relatedPostsMaxAge']  = $related_posts_max_age;
+
+			if ( ! empty( $api_key ) ) {
+				$response['apiKey'] = $api_key;
+			}
 		}
 		return rest_ensure_response( $response );
 	}
@@ -155,6 +178,35 @@ class Engagement_Wizard extends Wizard {
 		return \rest_ensure_response(
 			[
 				'relatedPostsMaxAge' => $args['relatedPostsMaxAge'],
+			]
+		);
+	}
+
+	/**
+	 * Update the Mailchimp API Key setting.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|WP_Error Updated value, if successful, or WP_Error.
+	 */
+	public function api_update_api_key( $request ) {
+		$args = $request->get_params();
+
+		if ( ! empty( $args['apiKey'] ) ) {
+			update_option( $this->api_key_option, $args['apiKey'] );
+		} else {
+			return new WP_Error(
+				'newspack_api_key_error',
+				esc_html__( 'There was an error updating the API key.', 'newspack' ),
+				[
+					'status' => 400,
+					'level'  => 'notice',
+				]
+			);
+		}
+
+		return \rest_ensure_response(
+			[
+				'apiKey' => $args['apiKey'],
 			]
 		);
 	}
