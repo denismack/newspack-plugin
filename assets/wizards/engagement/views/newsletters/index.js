@@ -78,9 +78,10 @@ class Newsletters extends Component {
 					{ apiKeySuccess && <Notice noticeText={ apiKeySuccess } isSuccess /> }
 					<p>
 						{ __(
-							'Integrate the Donation feature with Mailchimp by pasting in your API key below. To find your Mailchimp API key, log into your Mailchimp account and go to Account settings > Extras > API keys. From there, either grab an existing key or generate a new one.'
+							'Integrate the Donation and Salesforce features with Mailchimp by pasting in your API key below. To find your Mailchimp API key, log into your Mailchimp account and go to Account settings > Extras > API keys. From there, either grab an existing key or generate a new one.'
 						) }
 					</p>
+
 					<TextControl
 						label={ __( 'Enter your Mailchimp API key' ) }
 						value={ apiKey }

@@ -19,13 +19,16 @@ class Salesforce {
 	const SALESFORCE_REFRESH_TOKEN = 'newspack_salesforce_refresh_token';
 	const SALESFORCE_INSTANCE_URL  = 'newspack_salesforce_instance_url';
 	const SALESFORCE_WEBHOOK_ID    = 'newspack_salesforce_webhook_id';
+	const MAILCHIMP_API_KEY        = 'newspack_newsletters_mailchimp_api_key';
+	const MAILCHIMP_SETTINGS       = 'jetpack_mailchimp';
 	const DEFAULT_SETTINGS         = [
-		'client_id'     => '',
-		'client_secret' => '',
-		'access_token'  => '',
-		'refresh_token' => '',
-		'instance_url'  => '',
-		'webhook_id'    => '',
+		'client_id'          => '',
+		'client_secret'      => '',
+		'access_token'       => '',
+		'refresh_token'      => '',
+		'instance_url'       => '',
+		'webhook_id'         => '',
+		'mailchimp_settings' => [],
 	];
 
 	/**
@@ -55,6 +58,17 @@ class Salesforce {
 		$instance_url = get_option( self::SALESFORCE_INSTANCE_URL, 0 );
 		if ( ! empty( $instance_url ) ) {
 			$settings['instance_url'] = $instance_url;
+		}
+		$mailchimp_api_key  = get_option( self::MAILCHIMP_API_KEY, 0 );
+		$mailchimp_settings = get_option( self::MAILCHIMP_SETTINGS, 0 );
+
+		if ( ! empty( $mailchimp_settings ) && ! empty( $mailchimp_api_key ) ) {
+			$prefix_array = explode( '-', $mailchimp_api_key );
+			$prefix       = end( $prefix_array );
+
+			$settings['mailchimp_settings']           = json_decode( $mailchimp_settings );
+			$settings['mailchimp_settings']->api_key  = $mailchimp_api_key;
+			$settings['mailchimp_settings']->root_url = 'https://' . $prefix . '.api.mailchimp.com/3.0';
 		}
 
 		return $settings;
@@ -463,5 +477,156 @@ class Salesforce {
 
 			return $response_body->access_token;
 		}
+	}
+
+	/**
+	 * Get an array of Mailchimp webhooks.
+	 *
+	 * @throws \Exception Error message.
+	 * @return array Response from Mailchimp API.
+	 */
+	public static function get_mailchimp_webhooks() {
+		$salesforce_settings = self::get_salesforce_settings();
+
+		// Must have a valid API key and list.
+		if (
+			empty( $salesforce_settings['mailchimp_settings'] ) ||
+			empty( $salesforce_settings['mailchimp_settings']->api_key ) ||
+			empty( $salesforce_settings['mailchimp_settings']->follower_list_id ) ||
+			empty( $salesforce_settings['mailchimp_settings']->root_url )
+		) {
+			throw new \Exception( 'Invalid Mailchimp API key or list ID.' );
+		}
+
+		$api_key  = $salesforce_settings['mailchimp_settings']->api_key;
+		$list_id  = $salesforce_settings['mailchimp_settings']->follower_list_id;
+		$root_url = $salesforce_settings['mailchimp_settings']->root_url;
+
+		$mailchimp_response = wp_safe_remote_get(
+			$root_url . '/lists/' . $list_id . '/webhooks/',
+			[
+				'headers' => [
+					'Authorization' => 'Basic ' . base64_encode( 'user:' . $api_key ),
+				],
+			]
+		);
+
+		if ( is_wp_error( $mailchimp_response ) ) {
+			return $mailchimp_response;
+		}
+
+		$response_body = json_decode( $mailchimp_response['body'] );
+
+		return $response_body;
+	}
+
+	/**
+	 * Create a Mailchimp webhook to be triggered on user signup.
+	 *
+	 * @throws \Exception Error message.
+	 * @return array Response from Mailchimp API.
+	 */
+	public static function create_mailchimp_webhook() {
+		$salesforce_settings = self::get_salesforce_settings();
+
+		// Must have a valid API key and list.
+		if (
+			empty( $salesforce_settings['mailchimp_settings'] ) ||
+			empty( $salesforce_settings['mailchimp_settings']->api_key ) ||
+			empty( $salesforce_settings['mailchimp_settings']->follower_list_id ) ||
+			empty( $salesforce_settings['mailchimp_settings']->root_url )
+		) {
+			throw new \Exception( 'Invalid Mailchimp API key or list ID.' );
+		}
+
+		$api_key  = $salesforce_settings['mailchimp_settings']->api_key;
+		$list_id  = $salesforce_settings['mailchimp_settings']->follower_list_id;
+		$root_url = $salesforce_settings['mailchimp_settings']->root_url;
+
+		$mailchimp_response = wp_safe_remote_post(
+			$root_url . '/lists/' . $list_id . '/webhooks/',
+			[
+				'headers' => [
+					'Authorization' => 'Basic ' . base64_encode( 'user:' . $api_key ),
+				],
+				'body'    => wp_json_encode(
+					[
+						'url'     => NEWSPACK_API_URL . '/salesforce/mailchimp/sync',
+						'events'  => [
+							'subscribe'   => true,
+							'unsubscribe' => false,
+							'profile'     => true,
+							'cleaned'     => false,
+						],
+						'sources' => [
+							'user'  => true,
+							'admin' => true,
+							'api'   => false,
+						],
+					]
+				),
+			]
+		);
+
+		if ( is_wp_error( $mailchimp_response ) ) {
+			return $mailchimp_response;
+		}
+
+		$response_body = json_decode( $mailchimp_response['body'] );
+
+		return $response_body;
+	}
+
+	/**
+	 * Delete existing Mailchimp webhooks created by Newspack.
+	 *
+	 * @param Array $args Args for the request.
+	 * @throws \Exception Error message.
+	 * @return array Array of deleted webhook IDs.
+	 */
+	public static function delete_mailchimp_webhooks( $args ) {
+
+		$salesforce_settings = self::get_salesforce_settings();
+		$create              = $args['create'];
+		$webhooks            = $args['webhooks'];
+		$deleted_webhooks    = [];
+
+		if ( ! empty( $create ) || 0 === count( $webhooks ) ) {
+			return $deleted_webhooks;
+		}
+
+		// Must have a valid API key and list.
+		if (
+			empty( $salesforce_settings['mailchimp_settings'] ) ||
+			empty( $salesforce_settings['mailchimp_settings']->api_key ) ||
+			empty( $salesforce_settings['mailchimp_settings']->follower_list_id ) ||
+			empty( $salesforce_settings['mailchimp_settings']->root_url )
+		) {
+			throw new \Exception( 'Invalid Mailchimp API key or list ID.' );
+		}
+
+		$api_key  = $salesforce_settings['mailchimp_settings']->api_key;
+		$list_id  = $salesforce_settings['mailchimp_settings']->follower_list_id;
+		$root_url = $salesforce_settings['mailchimp_settings']->root_url;
+
+		foreach ( $webhooks as $webhook ) {
+			$mailchimp_response = wp_safe_remote_request(
+				$root_url . '/lists/' . $list_id . '/webhooks/' . $webhook['id'],
+				[
+					'method'  => 'DELETE',
+					'headers' => [
+						'Authorization' => 'Basic ' . base64_encode( 'user:' . $api_key ),
+					],
+				]
+			);
+
+			if ( is_wp_error( $mailchimp_response ) ) {
+				$deleted_webhooks[] = $mailchimp_response;
+			} else {
+				$deleted_webhooks[] = $webhook['id'];
+			}
+		}
+
+		return $deleted_webhooks;
 	}
 }

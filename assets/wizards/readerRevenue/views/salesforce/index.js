@@ -18,6 +18,7 @@ import { Component, Fragment } from '@wordpress/element';
  * Internal dependencies.
  */
 import './style.scss';
+import { MailchimpToggle } from './mailchimp';
 import { Notice, TextControl, withWizardScreen } from '../../../../components/src';
 
 /**
@@ -28,6 +29,7 @@ class Salesforce extends Component {
 		super( ...arguments );
 		this.state = {
 			error: null,
+			mailchimpWebhooks: [],
 		};
 	}
 
@@ -79,6 +81,9 @@ class Salesforce extends Component {
 	 */
 	async getTokens( authorizationCode, redirectURI ) {
 		const { data, onChange, wizardApiFetch } = this.props;
+		const { mailchimp_settings } = data;
+
+		console.log( mailchimp_settings );
 
 		try {
 			// Get the tokens.
@@ -102,6 +107,7 @@ class Salesforce extends Component {
 					client_secret,
 					instance_url,
 					refresh_token,
+					mailchimp_settings,
 				} );
 			}
 		} catch ( e ) {
@@ -143,11 +149,63 @@ class Salesforce extends Component {
 	}
 
 	/**
+	 * Check for the existence of a Mailchimp webhook to sync to Salesforce.
+	 */
+	async checkMailchimpWebhooks() {
+		const { data, wizardApiFetch } = this.props;
+		const { mailchimp_settings } = data;
+		const error = __( 'We couldn’t validate the connection with Mailchimp.', 'newspack' );
+
+		if ( ! mailchimp_settings || ! mailchimp_settings.api_key ) {
+			return;
+		}
+
+		try {
+			const response = await wizardApiFetch( {
+				path: '/newspack/v1/wizard/salesforce/mailchimp',
+				method: 'GET',
+			} );
+
+			if ( response.webhooks ) {
+				this.setState( { mailchimpWebhooks: response.webhooks } );
+			}
+		} catch ( e ) {
+			console.error( e );
+			this.setState( { error } );
+		}
+	}
+
+	/**
+	 * Create a Mailchimp webhook to sync subscribers to Salesforce upon signup, or delete the existing one.
+	 *
+	 * @param boolean create   Whether Mailchimp signups should be synced to Salesforce contacts.
+	 * @param array   webhooks Array of webhooks to update.
+	 */
+	async updateMailchimpWebhook( create, webhooks = [] ) {
+		const { wizardApiFetch } = this.props;
+		const error = __( 'We couldn’t validate the connection with Mailchimp.', 'newspack' );
+
+		try {
+			const response = await wizardApiFetch( {
+				path: '/newspack/v1/wizard/salesforce/mailchimp',
+				method: 'POST',
+				data: { create, webhooks },
+			} );
+
+			this.checkMailchimpWebhooks();
+		} catch ( e ) {
+			console.error( e );
+			this.setState( { error } );
+		}
+	}
+
+	/**
 	 * Render.
 	 */
 	render() {
 		const { data, isConnected, onChange } = this.props;
-		const { client_id, client_secret, error } = data;
+		const { mailchimpWebhooks } = this.state;
+		const { client_id, client_secret, mailchimp_settings, error } = data;
 
 		return (
 			<div className="newspack-salesforce-wizard">
@@ -231,6 +289,17 @@ class Salesforce extends Component {
 							onChange( { ...data, client_secret: value } );
 						} }
 					/>
+
+					{ isConnected && mailchimp_settings && (
+						<MailchimpToggle
+							onMount={ this.checkMailchimpWebhooks.bind( this ) }
+							onChange={ this.updateMailchimpWebhook.bind( this ) }
+							settings={ mailchimp_settings }
+							webhooks={ mailchimpWebhooks.filter(
+								webhook => webhook.url.indexOf( '/salesforce/mailchimp/sync' ) > -1
+							) }
+						/>
+					) }
 				</Fragment>
 			</div>
 		);

@@ -186,23 +186,12 @@ class Engagement_Wizard extends Wizard {
 	 * Update the Mailchimp API Key setting.
 	 *
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error Updated value, if successful, or WP_Error.
+	 * @return WP_REST_Response Updated value, if successful.
 	 */
 	public function api_update_api_key( $request ) {
 		$args = $request->get_params();
 
-		if ( ! empty( $args['apiKey'] ) ) {
-			update_option( $this->api_key_option, $args['apiKey'] );
-		} else {
-			return new WP_Error(
-				'newspack_api_key_error',
-				esc_html__( 'There was an error updating the API key.', 'newspack' ),
-				[
-					'status' => 400,
-					'level'  => 'notice',
-				]
-			);
-		}
+		update_option( $this->api_key_option, $args['apiKey'] );
 
 		return \rest_ensure_response(
 			[

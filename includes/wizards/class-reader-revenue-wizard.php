@@ -250,6 +250,28 @@ class Reader_Revenue_Wizard extends Wizard {
 			]
 		);
 
+		// Check for Mailchimp webhooks.
+		register_rest_route(
+			NEWSPACK_API_NAMESPACE,
+			'/wizard/salesforce/mailchimp',
+			[
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'api_mailchimp_get_webhooks' ],
+				'permission_callback' => [ $this, 'api_permissions_check' ],
+			]
+		);
+
+		// Create or delete a webhook for Mailchimp triggered on user subscription.
+		register_rest_route(
+			NEWSPACK_API_NAMESPACE,
+			'/wizard/salesforce/mailchimp',
+			[
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => [ $this, 'api_mailchimp_update_webhook' ],
+				'permission_callback' => [ $this, 'api_permissions_check' ],
+			]
+		);
+
 		register_rest_route(
 			NEWSPACK_API_NAMESPACE,
 			'/wizard/newspack-donations-wizard/donation/',
@@ -500,6 +522,28 @@ class Reader_Revenue_Wizard extends Wizard {
 		$response_body = json_decode( $salesforce_response['body'] );
 
 		return \rest_ensure_response( $response_body );
+	}
+
+	/**
+	 * Get existing Mailchimp webhooks, if any.
+	 */
+	public function api_mailchimp_get_webhooks() {
+		return \rest_ensure_response( Salesforce::get_mailchimp_webhooks() );
+	}
+
+	/**
+	 * Create or delete Mailchimp webhooks.
+	 *
+	 * @param array $request Request args.
+	 */
+	public function api_mailchimp_update_webhook( $request ) {
+		$params = $request->get_params();
+
+		if ( ! empty( $params['create'] ) ) {
+			return \rest_ensure_response( Salesforce::create_mailchimp_webhook() );
+		} else {
+			return \rest_ensure_response( Salesforce::delete_mailchimp_webhooks( $params ) );
+		}
 	}
 
 	/**

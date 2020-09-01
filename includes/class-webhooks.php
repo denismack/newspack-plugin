@@ -44,6 +44,16 @@ class Webhooks {
 				'permission_callback' => '__return_true',
 			]
 		);
+
+		register_rest_route(
+			NEWSPACK_API_NAMESPACE,
+			'/salesforce/mailchimp/sync',
+			[
+				'methods'             => [ \WP_REST_Server::READABLE, \WP_REST_Server::EDITABLE ],
+				'callback'            => [ $this, 'api_sync_mailchimp_salesforce' ],
+				'permission_callback' => '__return_true',
+			]
+		);
 	}
 
 	/**
@@ -123,6 +133,20 @@ class Webhooks {
 			[
 				'contact'       => $contact_response,
 				'opportunities' => $opportunities,
+			]
+		);
+	}
+
+	/**
+	 * Webhook callback handler for Mailchimp.
+	 *
+	 * @param WP_REST_Request $request Request containing webhook.
+	 * @return WP_REST_Response|WP_Error The response from Salesforce, or WP_Error.
+	 */
+	public function api_sync_mailchimp_salesforce( $request ) {
+		return \rest_ensure_response(
+			[
+				'success' => true,
 			]
 		);
 	}
