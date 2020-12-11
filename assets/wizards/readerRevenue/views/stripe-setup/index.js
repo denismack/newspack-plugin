@@ -14,6 +14,8 @@ import { ExternalLink } from '@wordpress/components';
  */
 import {
 	CheckboxControl,
+	Column,
+	Columns,
 	TextControl,
 	ToggleControl,
 	withWizardScreen,
@@ -38,33 +40,45 @@ class StripeSetup extends Component {
 			testSecretKey = '',
 		} = data;
 		return (
-			<div className="newspack-payment-setup-screen">
-				<ToggleControl
-					label={ __( 'Enable Stripe' ) }
-					checked={ enabled }
-					onChange={ _enabled => onChange( { ...data, enabled: _enabled } ) }
-				/>
-				{ enabled && (
-					<Fragment>
-						<h2 className="newspack-payment-setup-screen__settings-heading">
-							{ __( 'Stripe settings' ) }
-						</h2>
-						<CheckboxControl
-							label={ __( 'Use Stripe in test mode' ) }
-							checked={ testMode }
-							onChange={ _testMode => onChange( { ...data, testMode: _testMode } ) }
-							tooltip="Test mode will not capture real payments. Use it for testing your purchase flow."
+			<Fragment>
+				<Columns>
+					<Column>
+						<ToggleControl
+							label={ __( 'Enable Stripe' ) }
+							checked={ enabled }
+							onChange={ _enabled => onChange( { ...data, enabled: _enabled } ) }
 						/>
-						<div className="newspack-payment-setup-screen__api-keys-heading">
-							<p className="newspack-payment-setup-screen__api-keys-instruction">
-								{ __( 'Get your API keys from your Stripe account.' ) }{' '}
-								<ExternalLink href="https://stripe.com/docs/keys#api-keys">
-									{ __( 'Learn how' ) }
+						{ ! enabled && (
+							<p>
+								{ __( 'Other gateways can be enabled and set up in the ' ) }
+								<ExternalLink href="/wp-admin/admin.php?page=wc-settings&tab=checkout">
+									{ __( 'WooCommerce payment gateway settings' ) }
 								</ExternalLink>
 							</p>
-
-							{ testMode && (
-								<Fragment>
+						) }
+					</Column>
+				</Columns>
+				{ enabled && (
+					<Fragment>
+						<Columns>
+							<Column>
+								<CheckboxControl
+									label={ __( 'Use Stripe in test mode' ) }
+									checked={ testMode }
+									onChange={ _testMode => onChange( { ...data, testMode: _testMode } ) }
+									tooltip="Test mode will not capture real payments. Use it for testing your purchase flow."
+								/>
+								<p>
+									{ __( 'Get your API keys from your Stripe account.' ) }{' '}
+									<ExternalLink href="https://stripe.com/docs/keys#api-keys">
+										{ __( 'Learn how' ) }
+									</ExternalLink>
+								</p>
+							</Column>
+						</Columns>
+						{ testMode && (
+							<Columns>
+								<Column isWide>
 									<TextControl
 										type="password"
 										value={ testPublishableKey }
@@ -73,6 +87,8 @@ class StripeSetup extends Component {
 											onChange( { ...data, testPublishableKey: _testPublishableKey } )
 										}
 									/>
+								</Column>
+								<Column isWide>
 									<TextControl
 										type="password"
 										value={ testSecretKey }
@@ -81,10 +97,12 @@ class StripeSetup extends Component {
 											onChange( { ...data, testSecretKey: _testSecretKey } )
 										}
 									/>
-								</Fragment>
-							) }
-							{ ! testMode && (
-								<Fragment>
+								</Column>
+							</Columns>
+						) }
+						{ ! testMode && (
+							<Columns>
+								<Column isWide>
 									<TextControl
 										type="password"
 										value={ publishableKey }
@@ -93,26 +111,20 @@ class StripeSetup extends Component {
 											onChange( { ...data, publishableKey: _publishableKey } )
 										}
 									/>
+								</Column>
+								<Column isWide>
 									<TextControl
 										type="password"
 										value={ secretKey }
 										label={ __( 'Secret Key' ) }
 										onChange={ _secretKey => onChange( { ...data, secretKey: _secretKey } ) }
 									/>
-								</Fragment>
-							) }
-						</div>
+								</Column>
+							</Columns>
+						) }
 					</Fragment>
 				) }
-				{ ! enabled && (
-					<p className="newspack-payment-setup-screen__info">
-						{ __( 'Other gateways can be enabled and set up in the ' ) }
-						<ExternalLink href="/wp-admin/admin.php?page=wc-settings&tab=checkout">
-							{ __( 'WooCommerce payment gateway settings' ) }
-						</ExternalLink>
-					</p>
-				) }
-			</div>
+			</Fragment>
 		);
 	}
 }

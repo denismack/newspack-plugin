@@ -11,7 +11,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { PluginInstaller, SelectControl, withWizardScreen } from '../../../../components/src';
+import {
+	Column,
+	Columns,
+	PluginInstaller,
+	SelectControl,
+	withWizardScreen,
+} from '../../../../components/src';
 import Router from '../../../../components/src/proxied-imports/router';
 import { NEWSPACK, NRH } from '../../constants';
 
@@ -55,30 +61,34 @@ class Platform extends Component {
 		const { platform } = data;
 		return (
 			<Fragment>
-				<SelectControl
-					label={ __( 'Select Reader Revenue Platform', 'newspack' ) }
-					value={ platform }
-					options={ [
-						{ label: __( '-- Select Your Platform --', 'newspack' ), value: '' },
-						{
-							label: __( 'Newspack', 'newspack' ),
-							value: NEWSPACK,
-						},
-						{
-							label: __( 'News Revenue Hub', 'newspack' ),
-							value: NRH,
-						},
-					] }
-					onChange={ _platform => {
-						if ( _platform.length ) {
-							this.setState( { manualPlatformChange: true } );
-							onChange( {
-								...data,
-								platform: _platform,
-							} );
-						}
-					} }
-				/>
+				<Columns>
+					<Column>
+						<SelectControl
+							label={ __( 'Select Reader Revenue Platform', 'newspack' ) }
+							value={ platform }
+							options={ [
+								{ label: __( '-- Select Your Platform --', 'newspack' ), value: '' },
+								{
+									label: __( 'Newspack', 'newspack' ),
+									value: NEWSPACK,
+								},
+								{
+									label: __( 'News Revenue Hub', 'newspack' ),
+									value: NRH,
+								},
+							] }
+							onChange={ _platform => {
+								if ( _platform.length ) {
+									this.setState( { manualPlatformChange: true } );
+									onChange( {
+										...data,
+										platform: _platform,
+									} );
+								}
+							} }
+						/>
+					</Column>
+				</Columns>
 				{ NEWSPACK === platform && ! pluginStatus && (
 					<PluginInstaller
 						plugins={ [

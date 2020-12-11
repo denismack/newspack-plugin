@@ -11,7 +11,13 @@ import { Component, Fragment } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { SelectControl, TextControl, withWizardScreen } from '../../../../components/src';
+import {
+	Column,
+	Columns,
+	SelectControl,
+	TextControl,
+	withWizardScreen,
+} from '../../../../components/src';
 
 /**
  * Location Setup Screen Component
@@ -32,38 +38,54 @@ class LocationSetup extends Component {
 		} = data;
 		return (
 			<Fragment>
-				<SelectControl
-					label={ __( 'Where is your business based?' ) }
-					value={ countrystate }
-					options={ countryStateFields }
-					onChange={ _countrystate => onChange( { ...data, countrystate: _countrystate } ) }
-				/>
-				<TextControl
-					label={ __( 'Address' ) }
-					value={ address1 }
-					onChange={ _address1 => onChange( { ...data, address1: _address1 } ) }
-				/>
-				<TextControl
-					label={ __( 'Address line 2' ) }
-					value={ address2 }
-					onChange={ _address2 => onChange( { ...data, address2: _address2 } ) }
-				/>
-				<TextControl
-					label={ __( 'City' ) }
-					value={ city }
-					onChange={ _city => onChange( { ...data, city: _city } ) }
-				/>
-				<TextControl
-					label={ __( 'Postcode / Zip' ) }
-					value={ postcode }
-					onChange={ _postcode => onChange( { ...data, postcode: _postcode } ) }
-				/>
-				<SelectControl
-					label={ 'Which currency does your business use?' }
-					value={ currency }
-					options={ currencyFields }
-					onChange={ _currency => onChange( { ...data, currency: _currency } ) }
-				/>
+				<Columns>
+					<Column isWide negativeMargin>
+						<TextControl
+							label={ __( 'Address' ) }
+							value={ address1 }
+							onChange={ _address1 => onChange( { ...data, address1: _address1 } ) }
+						/>
+					</Column>
+					<Column isWide negativeMargin>
+						<TextControl
+							label={ __( 'Address line 2' ) }
+							value={ address2 }
+							onChange={ _address2 => onChange( { ...data, address2: _address2 } ) }
+						/>
+					</Column>
+				</Columns>
+				<Columns>
+					<Column isWide negativeMargin>
+						<TextControl
+							label={ __( 'City' ) }
+							value={ city }
+							onChange={ _city => onChange( { ...data, city: _city } ) }
+						/>
+						<TextControl
+							label={ __( 'Postcode / Zip' ) }
+							value={ postcode }
+							onChange={ _postcode => onChange( { ...data, postcode: _postcode } ) }
+						/>
+					</Column>
+					<Column isWide negativeMargin>
+						<SelectControl
+							label={ __( 'Country / State' ) }
+							value={ countrystate }
+							options={ countryStateFields }
+							onChange={ _countrystate => onChange( { ...data, countrystate: _countrystate } ) }
+						/>
+					</Column>
+				</Columns>
+				<Columns>
+					<Column isWide>
+						<SelectControl
+							label={ 'Currency' }
+							value={ currency }
+							options={ currencyFields }
+							onChange={ _currency => onChange( { ...data, currency: _currency } ) }
+						/>
+					</Column>
+				</Columns>
 			</Fragment>
 		);
 	}
