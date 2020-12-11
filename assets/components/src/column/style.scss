@@ -1,0 +1,53 @@
+/**
+ * Column
+ */
+
+.newspack-column {
+	width: 100%;
+
+	@media screen and ( min-width: 744px ) {
+		width: calc( ( 100% / 2 ) - ( 64px / 2 ) );
+	}
+
+	// Negative Margin
+
+	&__negative-margin {
+		margin-bottom: -24px;
+	}
+
+	// Wide
+
+	&__wide {
+		@media screen and ( min-width: 744px ) {
+			width: calc( ( 100% / 2 ) - ( 32px / 2 ) );
+		}
+	}
+
+	// Three Columns
+
+	&s__three & {
+		@media screen and ( min-width: 744px ) {
+			width: calc( ( 100% / 3 ) - ( 64px * 2 / 3 ) );
+		}
+	}
+
+	&s__three &__wide {
+		@media screen and ( min-width: 744px ) {
+			width: calc( ( 100% / 3 ) - ( 32px * 2 / 3 ) );
+		}
+	}
+
+	// Four Columns
+
+	&s__four & {
+		@media screen and ( min-width: 744px ) {
+			width: calc( ( 100% / 4 ) - ( 64px * 3 / 4 ) );
+		}
+	}
+
+	&s__four &__wide {
+		@media screen and ( min-width: 744px ) {
+			width: calc( ( 100% / 4 ) - ( 32px * 3 / 4 ) );
+		}
+	}
+}
