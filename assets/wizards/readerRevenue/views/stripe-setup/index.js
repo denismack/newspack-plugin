@@ -41,23 +41,23 @@ class StripeSetup extends Component {
 		} = data;
 		return (
 			<Fragment>
-				<Columns>
-					<Column>
-						<ToggleControl
-							label={ __( 'Enable Stripe' ) }
-							checked={ enabled }
-							onChange={ _enabled => onChange( { ...data, enabled: _enabled } ) }
-						/>
-						{ ! enabled && (
+				<ToggleControl
+					label={ __( 'Enable Stripe' ) }
+					checked={ enabled }
+					onChange={ _enabled => onChange( { ...data, enabled: _enabled } ) }
+				/>
+				{ ! enabled && (
+					<Columns>
+						<Column>
 							<p>
 								{ __( 'Other gateways can be enabled and set up in the ' ) }
 								<ExternalLink href="/wp-admin/admin.php?page=wc-settings&tab=checkout">
 									{ __( 'WooCommerce payment gateway settings' ) }
 								</ExternalLink>
 							</p>
-						) }
-					</Column>
-				</Columns>
+						</Column>
+					</Columns>
+				) }
 				{ enabled && (
 					<Fragment>
 						<Columns>
