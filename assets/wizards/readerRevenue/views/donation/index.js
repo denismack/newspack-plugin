@@ -9,11 +9,6 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 
 /**
- * Material UI dependencies.
- */
-import EditIcon from '@material-ui/icons/Edit';
-
-/**
  * Internal dependencies.
  */
 import { MoneyInput } from '../../components/';
@@ -62,73 +57,72 @@ class Donation extends Component {
 									noticeText={ __( 'Your donations landing page is set up and published.' ) }
 								/>
 							) }
-							<div className="newspack-donations-wizard__edit-page">
-								<Handoff
-									plugin="woocommerce"
-									editLink={ donationPage.editUrl }
-									isTertiary
-									isSmall
-									icon={ <EditIcon /> }
-									showOnBlockEditor
-								>
-									{ __( 'Edit Page' ) }
-								</Handoff>
-							</div>
+							<Handoff
+								plugin="woocommerce"
+								editLink={ donationPage.editUrl }
+								isTertiary
+								isSmall
+								showOnBlockEditor
+							>
+								{ __( 'Edit Page' ) }
+							</Handoff>
 						</Column>
 					) }
 					<Column>
 						<h2>{ __( 'Suggested donations' ) }</h2>
-						<p className="newspack-donations-wizard__help">
+						<p>
 							{ __(
 								'Set a suggested monthly donation amount. This will provide hints to readers about how much to donate, which will increase the average donation amount.'
 							) }
 						</p>
-						<div className="newspack-donations-wizard__use-tiered">
-							<ToggleControl
-								label={ __( 'Suggest low, middle, and high tiers for monthly donations' ) }
-								checked={ tiered }
-								onChange={ _tiered => onChange( { ...data, tiered: _tiered } ) }
-							/>
-						</div>
+						<ToggleControl
+							label={ __( 'Suggest low, middle, and high tiers for monthly donations' ) }
+							checked={ tiered }
+							onChange={ _tiered => onChange( { ...data, tiered: _tiered } ) }
+						/>
 						{ tiered && (
-							<div className="newspack-donations-wizard__tier-suggested-prices">
-								<MoneyInput
-									currencySymbol={ currencySymbol }
-									label={ __( 'Low-tier' ) }
-									value={ suggestedAmounts[ 0 ] }
-									onChange={ value =>
-										onChange( { ...data, suggestedAmounts: { ...suggestedAmounts, 0: value } } )
-									}
-								/>
-								<MoneyInput
-									currencySymbol={ currencySymbol }
-									label={ __( 'Mid-tier' ) }
-									value={ suggestedAmounts[ 1 ] }
-									onChange={ value =>
-										onChange( { ...data, suggestedAmounts: { ...suggestedAmounts, 1: value } } )
-									}
-								/>
-								<MoneyInput
-									currencySymbol={ currencySymbol }
-									label={ __( 'High-tier' ) }
-									value={ suggestedAmounts[ 2 ] }
-									onChange={ value =>
-										onChange( { ...data, suggestedAmounts: { ...suggestedAmounts, 2: value } } )
-									}
-								/>
-							</div>
+							<Columns hasThree>
+								<Column isWide>
+									<MoneyInput
+										currencySymbol={ currencySymbol }
+										label={ __( 'Low-tier' ) }
+										value={ suggestedAmounts[ 0 ] }
+										onChange={ value =>
+											onChange( { ...data, suggestedAmounts: { ...suggestedAmounts, 0: value } } )
+										}
+									/>
+								</Column>
+								<Column isWide>
+									<MoneyInput
+										currencySymbol={ currencySymbol }
+										label={ __( 'Mid-tier' ) }
+										value={ suggestedAmounts[ 1 ] }
+										onChange={ value =>
+											onChange( { ...data, suggestedAmounts: { ...suggestedAmounts, 1: value } } )
+										}
+									/>
+								</Column>
+								<Column isWide>
+									<MoneyInput
+										currencySymbol={ currencySymbol }
+										label={ __( 'High-tier' ) }
+										value={ suggestedAmounts[ 2 ] }
+										onChange={ value =>
+											onChange( { ...data, suggestedAmounts: { ...suggestedAmounts, 2: value } } )
+										}
+									/>
+								</Column>
+							</Columns>
 						) }
 						{ ! tiered && (
-							<div className="newspack-donations-wizard__suggested-price">
-								<MoneyInput
-									currencySymbol={ currencySymbol }
-									label={ __( 'Suggested donation amount per month' ) }
-									value={ suggestedAmountUntiered }
-									onChange={ _suggestedAmountUntiered =>
-										onChange( { ...data, suggestedAmountUntiered: _suggestedAmountUntiered } )
-									}
-								/>
-							</div>
+							<MoneyInput
+								currencySymbol={ currencySymbol }
+								label={ __( 'Suggested donation amount per month' ) }
+								value={ suggestedAmountUntiered }
+								onChange={ _suggestedAmountUntiered =>
+									onChange( { ...data, suggestedAmountUntiered: _suggestedAmountUntiered } )
+								}
+							/>
 						) }
 					</Column>
 				</Columns>
