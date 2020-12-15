@@ -6,7 +6,7 @@
  * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 
 /**
  * Internal dependencies.
@@ -20,7 +20,6 @@ import {
 	ToggleControl,
 	withWizardScreen,
 } from '../../../../components/src';
-import './style.scss';
 
 /**
  * Donation Settings Screen Component
@@ -38,7 +37,7 @@ class Donation extends Component {
 			tiered = false,
 		} = data;
 		return (
-			<div className="newspack-donations-wizard">
+			<Fragment>
 				<Columns>
 					{ donationPage && (
 						<Column>
@@ -126,7 +125,7 @@ class Donation extends Component {
 						) }
 					</Column>
 				</Columns>
-			</div>
+			</Fragment>
 		);
 	}
 }
