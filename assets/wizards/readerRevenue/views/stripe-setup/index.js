@@ -20,7 +20,6 @@ import {
 	ToggleControl,
 	withWizardScreen,
 } from '../../../../components/src';
-import './style.scss';
 
 /**
  * Stripe Setup Screen Component
@@ -76,52 +75,54 @@ class StripeSetup extends Component {
 								</p>
 							</Column>
 						</Columns>
-						{ testMode && (
-							<Columns>
-								<Column isWide>
-									<TextControl
-										type="password"
-										value={ testPublishableKey }
-										label={ __( 'Test Publishable Key' ) }
-										onChange={ _testPublishableKey =>
-											onChange( { ...data, testPublishableKey: _testPublishableKey } )
-										}
-									/>
-								</Column>
-								<Column isWide>
-									<TextControl
-										type="password"
-										value={ testSecretKey }
-										label={ __( 'Test Secret Key' ) }
-										onChange={ _testSecretKey =>
-											onChange( { ...data, testSecretKey: _testSecretKey } )
-										}
-									/>
-								</Column>
-							</Columns>
-						) }
-						{ ! testMode && (
-							<Columns>
-								<Column isWide>
-									<TextControl
-										type="password"
-										value={ publishableKey }
-										label={ __( 'Publishable Key' ) }
-										onChange={ _publishableKey =>
-											onChange( { ...data, publishableKey: _publishableKey } )
-										}
-									/>
-								</Column>
-								<Column isWide>
-									<TextControl
-										type="password"
-										value={ secretKey }
-										label={ __( 'Secret Key' ) }
-										onChange={ _secretKey => onChange( { ...data, secretKey: _secretKey } ) }
-									/>
-								</Column>
-							</Columns>
-						) }
+						<Columns marginT={ 32 }>
+							{ testMode && (
+								<Fragment>
+									<Column isWide>
+										<TextControl
+											type="password"
+											value={ testPublishableKey }
+											label={ __( 'Test Publishable Key' ) }
+											onChange={ _testPublishableKey =>
+												onChange( { ...data, testPublishableKey: _testPublishableKey } )
+											}
+										/>
+									</Column>
+									<Column isWide>
+										<TextControl
+											type="password"
+											value={ testSecretKey }
+											label={ __( 'Test Secret Key' ) }
+											onChange={ _testSecretKey =>
+												onChange( { ...data, testSecretKey: _testSecretKey } )
+											}
+										/>
+									</Column>
+								</Fragment>
+							) }
+							{ ! testMode && (
+								<Fragment>
+									<Column isWide>
+										<TextControl
+											type="password"
+											value={ publishableKey }
+											label={ __( 'Publishable Key' ) }
+											onChange={ _publishableKey =>
+												onChange( { ...data, publishableKey: _publishableKey } )
+											}
+										/>
+									</Column>
+									<Column isWide>
+										<TextControl
+											type="password"
+											value={ secretKey }
+											label={ __( 'Secret Key' ) }
+											onChange={ _secretKey => onChange( { ...data, secretKey: _secretKey } ) }
+										/>
+									</Column>
+								</Fragment>
+							) }
+						</Columns>
 					</Fragment>
 				) }
 			</Fragment>
