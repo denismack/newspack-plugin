@@ -22,15 +22,19 @@ class Column extends Component {
 	 * Render
 	 */
 	render() {
-		const { className, isWide, negativeMargin, ...otherProps } = this.props;
-		const classes = classnames(
-			'newspack-column',
-			isWide && 'newspack-column__wide',
-			negativeMargin && 'newspack-column__negative-margin',
-			className
-		);
-		return <div className={ classes } { ...otherProps } />;
+		const { className, isWide, marginB, marginT, ...otherProps } = this.props;
+		const classes = classnames( 'newspack-column', isWide && 'newspack-column__wide', className );
+		const css = {
+			marginBottom: marginB,
+			marginTop: marginT,
+		};
+		return <div className={ classes } style={ css } { ...otherProps } />;
 	}
 }
+
+Column.defaultProps = {
+	marginB: null,
+	marginT: null,
+};
 
 export default Column;

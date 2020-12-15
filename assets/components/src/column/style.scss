@@ -9,10 +9,12 @@
 		width: calc( ( 100% / 2 ) - ( 64px / 2 ) );
 	}
 
-	// Negative Margin
+	& + & {
+		padding-top: 32px;
 
-	&__negative-margin {
-		margin-bottom: -24px;
+		@media screen and ( min-width: 744px ) {
+			padding-top: 0;
+		}
 	}
 
 	// Wide
@@ -49,5 +51,15 @@
 		@media screen and ( min-width: 744px ) {
 			width: calc( ( 100% / 4 ) - ( 32px * 3 / 4 ) );
 		}
+	}
+
+	// First Child
+	> *:first-child {
+		margin-top: 0 !important;
+	}
+
+	// Last Child
+	> *:last-child {
+		margin-bottom: 0 !important;
 	}
 }
