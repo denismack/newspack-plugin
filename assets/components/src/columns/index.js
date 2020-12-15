@@ -22,7 +22,7 @@ class Columns extends Component {
 	 * Render
 	 */
 	render() {
-		const { className, hasThree, hasFour, ...otherProps } = this.props;
+		const { className, hasThree, hasFour, marginBottom, marginTop, ...otherProps } = this.props;
 		const classes = classnames(
 			'newspack-columns',
 			hasThree && 'newspack-columns__three',
@@ -30,8 +30,8 @@ class Columns extends Component {
 			className
 		);
 		const styles = {
-			marginBottom: this.props.marginBottom,
-			marginTop: this.props.marginTop,
+			'margin-bottom': marginBottom,
+			'margin-top': marginTop,
 		};
 		return <div className={ classes } style={ styles } { ...otherProps } />;
 	}
