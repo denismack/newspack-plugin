@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -24,68 +24,74 @@ class ThemeSelection extends Component {
 	render() {
 		const { updateTheme, theme } = this.props;
 		return (
-			<Columns>
-				<Column>
-					<StyleCard
-						cardTitle="Newspack"
-						image={ NewspackImg }
-						url="//newspack.newspackstaging.com"
-						isActive={ theme === 'newspack-theme' }
-						onClick={ () => updateTheme( 'newspack-theme' ) }
-						id={ `card--newspack-theme` }
-					/>
-				</Column>
-				<Column>
-					<StyleCard
-						cardTitle="Scott"
-						image={ ScottImg }
-						url="//scott.newspackstaging.com"
-						isActive={ theme === 'newspack-scott' }
-						onClick={ () => updateTheme( 'newspack-scott' ) }
-						id={ `card--newspack-scott` }
-					/>
-				</Column>
-				<Column>
-					<StyleCard
-						cardTitle="Nelson"
-						image={ NelsonImg }
-						url="//nelson.newspackstaging.com"
-						isActive={ theme === 'newspack-nelson' }
-						onClick={ () => updateTheme( 'newspack-nelson' ) }
-						id={ `card--newspack-nelson` }
-					/>
-				</Column>
-				<Column>
-					<StyleCard
-						cardTitle="Katharine"
-						image={ KatharineImg }
-						url="//katharine.newspackstaging.com"
-						isActive={ theme === 'newspack-katharine' }
-						onClick={ () => updateTheme( 'newspack-katharine' ) }
-						id={ `card--newspack-katharine` }
-					/>
-				</Column>
-				<Column>
-					<StyleCard
-						cardTitle="Sacha"
-						image={ SachaImg }
-						url="//sacha.newspackstaging.com"
-						isActive={ theme === 'newspack-sacha' }
-						onClick={ () => updateTheme( 'newspack-sacha' ) }
-						id={ `card--newspack-sacha` }
-					/>
-				</Column>
-				<Column>
-					<StyleCard
-						cardTitle="Joseph"
-						image={ JosephImg }
-						url="//joseph.newspackstaging.com"
-						isActive={ theme === 'newspack-joseph' }
-						onClick={ () => updateTheme( 'newspack-joseph' ) }
-						id={ `card--newspack-joseph` }
-					/>
-				</Column>
-			</Columns>
+			<Fragment>
+				<Columns>
+					<Column>
+						<StyleCard
+							cardTitle="Newspack"
+							image={ NewspackImg }
+							url="//newspack.newspackstaging.com"
+							isActive={ theme === 'newspack-theme' }
+							onClick={ () => updateTheme( 'newspack-theme' ) }
+							id={ `card--newspack-theme` }
+						/>
+					</Column>
+					<Column>
+						<StyleCard
+							cardTitle="Scott"
+							image={ ScottImg }
+							url="//scott.newspackstaging.com"
+							isActive={ theme === 'newspack-scott' }
+							onClick={ () => updateTheme( 'newspack-scott' ) }
+							id={ `card--newspack-scott` }
+						/>
+					</Column>
+				</Columns>
+				<Columns>
+					<Column>
+						<StyleCard
+							cardTitle="Nelson"
+							image={ NelsonImg }
+							url="//nelson.newspackstaging.com"
+							isActive={ theme === 'newspack-nelson' }
+							onClick={ () => updateTheme( 'newspack-nelson' ) }
+							id={ `card--newspack-nelson` }
+						/>
+					</Column>
+					<Column>
+						<StyleCard
+							cardTitle="Katharine"
+							image={ KatharineImg }
+							url="//katharine.newspackstaging.com"
+							isActive={ theme === 'newspack-katharine' }
+							onClick={ () => updateTheme( 'newspack-katharine' ) }
+							id={ `card--newspack-katharine` }
+						/>
+					</Column>
+				</Columns>
+				<Columns>
+					<Column>
+						<StyleCard
+							cardTitle="Sacha"
+							image={ SachaImg }
+							url="//sacha.newspackstaging.com"
+							isActive={ theme === 'newspack-sacha' }
+							onClick={ () => updateTheme( 'newspack-sacha' ) }
+							id={ `card--newspack-sacha` }
+						/>
+					</Column>
+					<Column>
+						<StyleCard
+							cardTitle="Joseph"
+							image={ JosephImg }
+							url="//joseph.newspackstaging.com"
+							isActive={ theme === 'newspack-joseph' }
+							onClick={ () => updateTheme( 'newspack-joseph' ) }
+							id={ `card--newspack-joseph` }
+						/>
+					</Column>
+				</Columns>
+			</Fragment>
 		);
 	}
 }
