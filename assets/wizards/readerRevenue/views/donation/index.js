@@ -80,8 +80,8 @@ class Donation extends Component {
 							onChange={ _tiered => onChange( { ...data, tiered: _tiered } ) }
 						/>
 						{ tiered && (
-							<Columns hasThree>
-								<Column isWide>
+							<Columns columns3 gutterSmall>
+								<Column>
 									<MoneyInput
 										currencySymbol={ currencySymbol }
 										label={ __( 'Low-tier' ) }
@@ -91,7 +91,7 @@ class Donation extends Component {
 										}
 									/>
 								</Column>
-								<Column isWide>
+								<Column>
 									<MoneyInput
 										currencySymbol={ currencySymbol }
 										label={ __( 'Mid-tier' ) }
@@ -101,7 +101,7 @@ class Donation extends Component {
 										}
 									/>
 								</Column>
-								<Column isWide>
+								<Column>
 									<MoneyInput
 										currencySymbol={ currencySymbol }
 										label={ __( 'High-tier' ) }

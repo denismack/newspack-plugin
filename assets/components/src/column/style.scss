@@ -2,55 +2,16 @@
  * Column
  */
 
+@mixin column-width( $column: 2, $gutter: 64px ) {
+	width: calc( ( 100% / #{$column} ) - ( #{$gutter} * ( #{$column} - 1 ) / #{$column} ) );
+}
+
 .newspack-column {
 	width: 100%;
 
-	@media screen and ( min-width: 744px ) {
-		width: calc( ( 100% / 2 ) - ( 64px / 2 ) );
-	}
-
+	// Multiple Columns
 	& + & {
 		padding-top: 32px;
-
-		@media screen and ( min-width: 744px ) {
-			padding-top: 0;
-		}
-	}
-
-	// Wide
-
-	&__wide {
-		@media screen and ( min-width: 744px ) {
-			width: calc( ( 100% / 2 ) - ( 32px / 2 ) );
-		}
-	}
-
-	// Three Columns
-
-	&s__three & {
-		@media screen and ( min-width: 744px ) {
-			width: calc( ( 100% / 3 ) - ( 64px * 2 / 3 ) );
-		}
-	}
-
-	&s__three &__wide {
-		@media screen and ( min-width: 744px ) {
-			width: calc( ( 100% / 3 ) - ( 32px * 2 / 3 ) );
-		}
-	}
-
-	// Four Columns
-
-	&s__four & {
-		@media screen and ( min-width: 744px ) {
-			width: calc( ( 100% / 4 ) - ( 64px * 3 / 4 ) );
-		}
-	}
-
-	&s__four &__wide {
-		@media screen and ( min-width: 744px ) {
-			width: calc( ( 100% / 4 ) - ( 32px * 3 / 4 ) );
-		}
 	}
 
 	// First Child
@@ -61,5 +22,59 @@
 	// Last Child
 	> *:last-child {
 		margin-bottom: 0 !important;
+	}
+
+	// Media Queries
+	@media screen and ( min-width: 744px ) {
+		// Default
+		@include column-width();
+
+		// Columns variable
+		$columns: #{&}s;
+
+		// Gutter Small
+		#{$columns}__gutter-small & {
+			@include column-width( 2, 32px );
+		}
+
+		// Gutter Medium
+		#{$columns}__gutter-medium & {
+			@include column-width( 2, 48px );
+		}
+
+		// Columns 3
+		#{$columns}__columns-3 & {
+			@include column-width( 3, 64px );
+		}
+
+		// Columns 3 - Gutter Small
+		#{$columns}__columns-3#{$columns}__gutter-small & {
+			@include column-width( 3, 32px );
+		}
+
+		// Columns 3 - Gutter Medium
+		#{$columns}__columns-3#{$columns}__gutter-medium & {
+			@include column-width( 3, 48px );
+		}
+
+		// Columns 4
+		#{$columns}__columns-4 & {
+			@include column-width( 4, 64px );
+		}
+
+		// Columns 4 - Gutter Small
+		#{$columns}__columns-4#{$columns}__gutter-small & {
+			@include column-width( 4, 32px );
+		}
+
+		// Columns 4 - Gutter Medium
+		#{$columns}__columns-4#{$columns}__gutter-medium & {
+			@include column-width( 4, 48px );
+		}
+
+		// Multiple Columns
+		& + & {
+			padding-top: 0;
+		}
 	}
 }

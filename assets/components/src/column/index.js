@@ -22,8 +22,8 @@ class Column extends Component {
 	 * Render
 	 */
 	render() {
-		const { className, isWide, marginBottom, marginTop, ...otherProps } = this.props;
-		const classes = classnames( 'newspack-column', isWide && 'newspack-column__wide', className );
+		const { className, marginBottom, marginTop, ...otherProps } = this.props;
+		const classes = classnames( 'newspack-column', className );
 		const styles = {
 			'margin-bottom': marginBottom,
 			'margin-top': marginTop,
