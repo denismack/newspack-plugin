@@ -43,12 +43,7 @@ class StyleCard extends Component {
 						{ url && <WebPreview url={ url } label={ __( 'View Demo' ) } isSmall isSecondary /> }
 					</div>
 				</div>
-				<div className="newspack-style-card__content">
-					<h2 className="newspack-style-card__heading">
-						<span className="newspack-style-card__title">{ cardTitle }</span>
-						{ isActive && <span className="newspack-style-card__status">{ __( 'Active' ) }</span> }
-					</h2>
-				</div>
+				<div className="newspack-style-card__content">{ cardTitle }</div>
 			</div>
 		);
 	}

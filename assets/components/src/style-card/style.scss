@@ -53,11 +53,6 @@
 		.newspack-style-card__content {
 			background: $primary-500;
 			color: white;
-
-			.newspack-style-card__heading {
-				color: inherit;
-				font-weight: bold;
-			}
 		}
 	}
 
@@ -76,30 +71,12 @@
 	// Content
 	.newspack-style-card__content {
 		border-radius: 0 0 2px 2px;
-
-		.newspack-style-card__heading {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0;
-			padding: 16px;
-		}
-
-		.newspack-style-card__title {
-			margin-right: 8px;
-		}
-
-		.newspack-style-card__status {
-			border: 1px solid;
-			border-radius: 12px;
-			display: block;
-			flex: 0 0 auto;
-			font-size: 12px;
-			font-weight: bold;
-			line-height: 16px;
-			margin: 3px 0;
-			padding: 0 8px;
-			text-transform: uppercase;
-		}
+		color: $dark-gray-900;
+		font-size: 17px;
+		font-weight: bold;
+		line-height: 24px;
+		padding: 16px;
+		text-align: center;
 	}
 
 	// Actions
