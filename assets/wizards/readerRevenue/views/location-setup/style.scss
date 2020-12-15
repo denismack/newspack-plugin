@@ -10,15 +10,19 @@
 
 		.newspack-text-control {
 			margin: 0;
-			width: calc( 50% - 32px / 2 );
+			width: 100%;
 
 			@media screen and ( min-width: 600px ) {
+				width: calc( 50% - 48px / 2 );
+			}
+
+			@media screen and ( min-width: 744px ) {
 				&:first-of-type {
-					width: calc( 100% / 3 * 2 - 32px / 2 );
+					width: calc( 100% / 5 * 3 - 48px / 2 );
 				}
 
 				&:nth-of-type( 2 ) {
-					width: calc( 100% / 3 - 32px / 2 );
+					width: calc( 100% / 5 * 2 - 48px / 2 );
 				}
 			}
 
