@@ -75,7 +75,7 @@ class StripeSetup extends Component {
 								</p>
 							</Column>
 						</Columns>
-						<Columns marginT={ 32 }>
+						<Columns marginTop={ 32 }>
 							{ testMode && (
 								<Fragment>
 									<Column isWide>

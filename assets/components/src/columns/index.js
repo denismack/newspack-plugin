@@ -22,24 +22,24 @@ class Columns extends Component {
 	 * Render
 	 */
 	render() {
-		const { className, hasThree, hasFour, marginB, marginT, ...otherProps } = this.props;
+		const { className, hasThree, hasFour, ...otherProps } = this.props;
 		const classes = classnames(
 			'newspack-columns',
 			hasThree && 'newspack-columns__three',
 			hasFour && 'newspack-columns__four',
 			className
 		);
-		const css = {
-			marginBottom: marginB,
-			marginTop: marginT,
+		const styles = {
+			marginBottom: this.props.marginBottom,
+			marginTop: this.props.marginTop,
 		};
-		return <div className={ classes } style={ css } { ...otherProps } />;
+		return <div className={ classes } style={ styles } { ...otherProps } />;
 	}
 }
 
 Columns.defaultProps = {
-	marginB: null,
-	marginT: null,
+	marginBottom: null,
+	marginTop: null,
 };
 
 export default Columns;

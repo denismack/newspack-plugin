@@ -40,21 +40,21 @@ class LocationSetup extends Component {
 		return (
 			<Fragment>
 				<Columns>
-					<Column isWide marginB={ 8 }>
+					<Column isWide marginBottom={ 8 }>
 						<TextControl
 							label={ __( 'Address' ) }
 							value={ address1 }
 							onChange={ _address1 => onChange( { ...data, address1: _address1 } ) }
 						/>
 					</Column>
-					<Column isWide marginB={ 8 }>
+					<Column isWide marginBottom={ 8 }>
 						<TextControl
 							label={ __( 'Address line 2' ) }
 							value={ address2 }
 							onChange={ _address2 => onChange( { ...data, address2: _address2 } ) }
 						/>
 					</Column>
-					<Column isWide marginB={ 8 } className="newspack-location-setup__city-zip">
+					<Column isWide marginBottom={ 8 } className="newspack-location-setup__city-zip">
 						<TextControl
 							label={ __( 'City' ) }
 							value={ city }
@@ -66,7 +66,7 @@ class LocationSetup extends Component {
 							onChange={ _postcode => onChange( { ...data, postcode: _postcode } ) }
 						/>
 					</Column>
-					<Column isWide marginB={ 8 }>
+					<Column isWide marginBottom={ 8 }>
 						<SelectControl
 							label={ __( 'Country / State' ) }
 							value={ countrystate }
