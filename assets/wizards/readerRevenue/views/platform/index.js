@@ -62,7 +62,7 @@ class Platform extends Component {
 		return (
 			<Fragment>
 				<Columns>
-					<Column isWide>
+					<Column>
 						<SelectControl
 							label={ __( 'Select Reader Revenue Platform', 'newspack' ) }
 							value={ platform }
