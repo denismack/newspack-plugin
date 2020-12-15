@@ -4,9 +4,15 @@
 
 @import '~@wordpress/base-styles/colors';
 
-.newspack-donations-wizard__money-input {
+.newspack-money-input {
 	align-items: flex-end;
 	display: flex;
+	margin: 32px 0;
+
+	> * {
+		margin-bottom: 0;
+		margin-top: 0;
+	}
 
 	.currency {
 		background: $light-gray-500;
@@ -17,7 +23,6 @@
 		font-weight: bold;
 		height: 48px;
 		line-height: 48px;
-		margin: 32px 0;
 		text-align: center;
 	}
 
