@@ -18,6 +18,7 @@ import {
 	TextControl,
 	withWizardScreen,
 } from '../../../../components/src';
+import './style.scss';
 
 /**
  * Location Setup Screen Component
@@ -39,23 +40,21 @@ class LocationSetup extends Component {
 		return (
 			<Fragment>
 				<Columns>
-					<Column isWide negativeMargin>
+					<Column isWide marginB={ 8 }>
 						<TextControl
 							label={ __( 'Address' ) }
 							value={ address1 }
 							onChange={ _address1 => onChange( { ...data, address1: _address1 } ) }
 						/>
 					</Column>
-					<Column isWide negativeMargin>
+					<Column isWide marginB={ 8 }>
 						<TextControl
 							label={ __( 'Address line 2' ) }
 							value={ address2 }
 							onChange={ _address2 => onChange( { ...data, address2: _address2 } ) }
 						/>
 					</Column>
-				</Columns>
-				<Columns>
-					<Column isWide negativeMargin>
+					<Column isWide marginB={ 8 } className="newspack-location-setup__city-zip">
 						<TextControl
 							label={ __( 'City' ) }
 							value={ city }
@@ -67,7 +66,7 @@ class LocationSetup extends Component {
 							onChange={ _postcode => onChange( { ...data, postcode: _postcode } ) }
 						/>
 					</Column>
-					<Column isWide negativeMargin>
+					<Column isWide marginB={ 8 }>
 						<SelectControl
 							label={ __( 'Country / State' ) }
 							value={ countrystate }
@@ -75,8 +74,6 @@ class LocationSetup extends Component {
 							onChange={ _countrystate => onChange( { ...data, countrystate: _countrystate } ) }
 						/>
 					</Column>
-				</Columns>
-				<Columns>
 					<Column isWide>
 						<SelectControl
 							label={ 'Currency' }

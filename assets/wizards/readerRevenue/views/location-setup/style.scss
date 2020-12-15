@@ -1,0 +1,32 @@
+/**
+ * Address
+ */
+
+.newspack-location-setup {
+	&__city-zip {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+
+		.newspack-text-control {
+			margin: 0;
+			width: calc( 50% - 32px / 2 );
+
+			@media screen and ( min-width: 600px ) {
+				&:first-of-type {
+					width: calc( 100% / 3 * 2 - 32px / 2 );
+				}
+
+				&:nth-of-type( 2n ) {
+					width: calc( 100% / 3 - 32px / 2 );
+				}
+			}
+
+			label {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		}
+	}
+}
