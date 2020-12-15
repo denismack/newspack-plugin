@@ -150,7 +150,7 @@ class Salesforce extends Component {
 		const { client_id, client_secret, error } = data;
 
 		return (
-			<div className="newspack-salesforce-wizard">
+			<Fragment>
 				<h2>{ __( 'Connected App settings', 'newspack' ) }</h2>
 				<Columns>
 					<Column>
@@ -234,7 +234,7 @@ class Salesforce extends Component {
 						/>
 					</Column>
 				</Columns>
-			</div>
+			</Fragment>
 		);
 	}
 }
