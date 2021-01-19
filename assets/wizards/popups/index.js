@@ -22,7 +22,14 @@ import { groupBy } from 'lodash';
 import { WebPreview, withWizard } from '../../components/src';
 import Router from '../../components/src/proxied-imports/router';
 import { isOverlay } from './utils';
-import { PopupGroup, Analytics, Settings, Segmentation, Preview } from './views';
+import {
+	CampaignGroupManagement,
+	PopupGroup,
+	Analytics,
+	Settings,
+	Segmentation,
+	Preview,
+} from './views';
 
 const { HashRouter, Redirect, Route, Switch } = Router;
 
@@ -38,6 +45,11 @@ const tabbedNavigation = [
 	{
 		label: __( 'Segmentation', 'newpack' ),
 		path: '/segmentation',
+		exact: true,
+	},
+	{
+		label: __( 'Groups', 'newpack' ),
+		path: '/group-management',
 		exact: true,
 	},
 	{
@@ -290,6 +302,10 @@ class PopupsWizard extends Component {
 								/>
 								<Route path="/analytics" render={ () => <Analytics { ...sharedProps } /> } />
 								<Route path="/preview" render={ () => <Preview { ...sharedProps } /> } />
+								<Route
+									path="/group-management"
+									render={ () => <CampaignGroupManagement { ...sharedProps } /> }
+								/>
 								<Route path="/settings" render={ () => <Settings { ...sharedProps } /> } />
 								<Redirect to="/campaigns" />
 							</Switch>
