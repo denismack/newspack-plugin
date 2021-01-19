@@ -1,19 +1,18 @@
 /**
  * WordPress dependencies.
  */
-import { useState } from '@wordpress/element';
+import { useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { format } from '@wordpress/date';
-import { Tooltip, MenuItem } from '@wordpress/components';
+import { Draggable, Tooltip, MenuItem } from '@wordpress/components';
 import { ESCAPE } from '@wordpress/keycodes';
+import { Icon, chevronDown, chevronUp, dragHandle, moreVertical } from '@wordpress/icons';
 
 /**
  * Material UI dependencies.
  */
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
-import { Icon, moreVertical } from '@wordpress/icons';
 
 /**
  * Internal dependencies.
@@ -30,59 +29,140 @@ const AddNewSegmentLink = () => (
 	</NavLink>
 );
 
-const SegmentActionCard = ( { segment, deleteSegment } ) => {
+const SegmentActionCard = ( {
+	segment,
+	deleteSegment,
+	dropTargetIndex,
+	setDropTargetIndex,
+	index,
+	totalSegments,
+	wrapperRef,
+} ) => {
 	const [ popoverVisibility, setPopoverVisibility ] = useState( false );
+	const [ isDragging, setIsDragging ] = useState( false );
+
 	const onFocusOutside = () => setPopoverVisibility( false );
 	const history = useHistory();
+	const isFirstTarget = 0 === index;
+	const isLastTarget = index + 1 === totalSegments;
+	const isDropTarget = index === dropTargetIndex;
+	const targetIsLast = isLastTarget && dropTargetIndex >= totalSegments;
+	const onDragStart = () => {
+		console.log( 'drag start' );
+		setDropTargetIndex( null );
+		setIsDragging( true );
+	};
+	const onDragEnd = () => {
+		console.log( 'drag end', dropTargetIndex );
+		setDropTargetIndex( null );
+		setIsDragging( false );
+	};
+	const onDragOver = e => {
+		if ( e.target.classList.contains( 'newspack-action-card' ) ) {
+			const segmentCards = Array.prototype.slice.call( wrapperRef.current.children );
+			let targetIndex = segmentCards.indexOf( e.target.parentElement );
+
+			// Handle dropping after the last item.
+			if ( targetIndex + 1 === totalSegments ) {
+				const lastSegment = segmentCards[ totalSegments - 1 ];
+				if ( e.pageY > lastSegment.getBoundingClientRect().top + lastSegment.clientHeight / 2 )
+					targetIndex = totalSegments;
+			}
+
+			setDropTargetIndex( 0 <= targetIndex ? targetIndex : null );
+		}
+	};
 
 	return (
-		<ActionCard
-			isSmall
-			title={ segment.name }
-			titleLink={ `#/segmentation/${ segment.id }` }
-			description={ `${ __( 'Created on', 'newspack' ) } ${ format(
-				'Y/m/d',
-				segment.created_at
-			) }` }
-			actionText={
-				<>
-					<Tooltip text={ __( 'More options', 'newspack' ) }>
-						<Button
-							className="icon-only"
-							onClick={ () => setPopoverVisibility( ! popoverVisibility ) }
-						>
-							<Icon icon={ moreVertical } />
-						</Button>
-					</Tooltip>
-					{ popoverVisibility && (
-						<Popover
-							position="bottom left"
-							onKeyDown={ event => ESCAPE === event.keyCode && onFocusOutside }
-							onFocusOutside={ onFocusOutside }
-						>
-							<MenuItem
-								onClick={ () => history.push( `/segmentation/${ segment.id }` ) }
-								icon={ <EditIcon /> }
-								className="newspack-button"
-							>
-								{ __( 'Edit', 'newspack' ) }
-							</MenuItem>
-							<MenuItem
-								onClick={ () => deleteSegment( segment ) }
-								icon={ <DeleteIcon /> }
-								className="newspack-button"
-							>
-								{ __( 'Delete', 'newspack' ) }
-							</MenuItem>
-						</Popover>
-					) }
-				</>
+		<div
+			className={
+				'newspack-campaigns__draggable' +
+				( isDragging ? ' is-dragging' : '' ) +
+				( isDropTarget ? ' is-drop-target' : '' ) +
+				( targetIsLast ? ' drop-target-after' : '' )
 			}
-		/>
+			id={ `segment-${ segment.id }` }
+		>
+			<Draggable
+				elementId={ `segment-${ segment.id }` }
+				transferData={ {} }
+				onDragStart={ onDragStart }
+				onDragEnd={ onDragEnd }
+				onDragOver={ onDragOver }
+			>
+				{ ( { onDraggableStart, onDraggableEnd } ) => (
+					<ActionCard
+						isSmall
+						title={ segment.name }
+						titleLink={ `#/segmentation/${ segment.id }` }
+						description={ `${ __( 'Created on', 'newspack' ) } ${ format(
+							'Y/m/d',
+							segment.created_at
+						) }` }
+						actionText={
+							<>
+								<Tooltip text={ __( 'More options', 'newspack' ) }>
+									<Button
+										className="icon-only"
+										onClick={ () => setPopoverVisibility( ! popoverVisibility ) }
+									>
+										<Icon icon={ moreVertical } />
+									</Button>
+								</Tooltip>
+								{ popoverVisibility && (
+									<Popover
+										position="bottom left"
+										onKeyDown={ event => ESCAPE === event.keyCode && onFocusOutside }
+										onFocusOutside={ onFocusOutside }
+									>
+										<MenuItem
+											onClick={ () => history.push( `/segmentation/${ segment.id }` ) }
+											icon={ <EditIcon /> }
+											className="newspack-button"
+										>
+											{ __( 'Edit', 'newspack' ) }
+										</MenuItem>
+										<MenuItem
+											onClick={ () => deleteSegment( segment ) }
+											icon={ <DeleteIcon /> }
+											className="newspack-button"
+										>
+											{ __( 'Delete', 'newspack' ) }
+										</MenuItem>
+									</Popover>
+								) }
+							</>
+						}
+					>
+						<div className="newspack-campaigns__segment-priority-controls">
+							<div
+								className="drag-handle"
+								draggable
+								onDragStart={ onDraggableStart }
+								onDragEnd={ onDraggableEnd }
+							>
+								<Icon icon={ dragHandle } />
+							</div>
+							<div className="movers">
+								<Button isLink disabled={ isFirstTarget }>
+									<Icon icon={ chevronUp } />
+								</Button>
+								<Button isLink disabled={ isLastTarget }>
+									<Icon icon={ chevronDown } />
+								</Button>
+							</div>
+						</div>
+					</ActionCard>
+				) }
+			</Draggable>
+		</div>
 	);
 };
 
 const SegmentsList = ( { wizardApiFetch, segments, setSegments } ) => {
+	const [ dropTargetIndex, setDropTargetIndex ] = useState( null );
+
+	const ref = useRef();
 	const deleteSegment = segment => {
 		wizardApiFetch( {
 			path: `/newspack/v1/wizard/newspack-popups-wizard/segmentation/${ segment.id }`,
@@ -99,12 +179,17 @@ const SegmentsList = ( { wizardApiFetch, segments, setSegments } ) => {
 			<div className="newspack-campaigns-wizard-segments__list-top">
 				<AddNewSegmentLink />
 			</div>
-			<div className="newspack-campaigns-wizard-segments__list">
-				{ segments.map( segment => (
+			<div className="newspack-campaigns-wizard-segments__list" ref={ ref }>
+				{ segments.map( ( segment, index ) => (
 					<SegmentActionCard
 						deleteSegment={ deleteSegment }
 						key={ segment.id }
 						segment={ segment }
+						index={ index }
+						wrapperRef={ ref }
+						dropTargetIndex={ dropTargetIndex }
+						setDropTargetIndex={ setDropTargetIndex }
+						totalSegments={ segments.length }
 					/>
 				) ) }
 			</div>
